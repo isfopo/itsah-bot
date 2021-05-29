@@ -2,4 +2,4 @@
 env
 .vscode
 
-*.csv
+data.csv
