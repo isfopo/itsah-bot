@@ -1,7 +1,8 @@
 import os
 import discord
-from dotenv import load_dotenv
+import spacy
 import pandas as pd
+from dotenv import load_dotenv
 load_dotenv()
 
 client = discord.Client()
@@ -22,7 +23,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-  if message.author == client.user: # TODO is there a way to filter out other bots?
+  if message.author == client.user or message.author.bot:
     return
   elif message.content.startswith("--"):
     cmd = message.content.split()[0].replace("--", "")
@@ -33,18 +34,17 @@ async def on_message(message):
   if cmd == "hello":
     await message.channel.send("hello")
 
-  if cmd == 'scan':
+  elif cmd == 'scan':
     data = pd.DataFrame(columns=['content', 'time', 'author'])
 
 
     async for msg in message.channel.history(limit=LIMIT):
-      if msg.author != client.user:         
-          if not is_command(msg):                             
-              data = data.append({'content': msg.content,
-                                  'time': msg.created_at,
-                                  'author': msg.author.name}, ignore_index=True)
+      if not msg.author.bot and not is_command(msg):                             
+          data = data.append({'content': msg.content,
+                              'time': msg.created_at,
+                              'author': msg.author.name}, ignore_index=True)
           if len(data) == LIMIT:
-              break
+            break
       
     file_location = "data.csv"
     data.to_csv(file_location)
