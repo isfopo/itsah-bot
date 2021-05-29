@@ -22,12 +22,13 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-  if message.author == client.user:
+  if message.author == client.user: # TODO is there a way to filter out other bots?
     return
   elif message.content.startswith("--"):
     cmd = message.content.split()[0].replace("--", "")
-    if len(message.content.split()) > 1:
-      params = message.content.split()[1:]
+    params = message.content.split()[1:] if len(message.content.split()) > 1 else None
+  else:
+    return
 
   if cmd == "hello":
     await message.channel.send("hello")
@@ -36,9 +37,9 @@ async def on_message(message):
     data = pd.DataFrame(columns=['content', 'time', 'author'])
 
 
-    async for msg in message.channel.history(limit=LIMIT): # As an example, I've set the limit to 10000
-      if msg.author != client.user:                        # meaning it'll read 10000 messages instead of           
-          if not is_command(msg):                          # the default amount of 100        
+    async for msg in message.channel.history(limit=LIMIT):
+      if msg.author != client.user:         
+          if not is_command(msg):                             
               data = data.append({'content': msg.content,
                                   'time': msg.created_at,
                                   'author': msg.author.name}, ignore_index=True)
