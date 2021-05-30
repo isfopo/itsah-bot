@@ -152,12 +152,20 @@ async def on_message(message):
     data.to_csv(file_location)
 
 if __name__ == "__main__":
-  train, test = load_training_data(limit=2500) #TODO only run training if model is not present
-  train_model(train, test)
-  print("Testing model")
-  (score, prediction) = test_model("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.", "model_artifacts")
-  print(
+  score = 0
+  prediction = None
+
+  while not score or not prediction:
+    try:
+      (score, prediction) = test_model("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.", "model_artifacts")
+    except (OSError, FileNotFoundError) as e:
+      train, test = load_training_data(limit=2500)
+      train_model(train, test)
+    if score and prediction:
+      print(
         f"Predicted sentiment: {prediction}"
         f"\tScore: {score}"
-    )
+      )
+
+  
 client.run(os.getenv("DISCORD_TOKEN"))
