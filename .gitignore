@@ -3,3 +3,4 @@ env
 .vscode
 
 data.csv
+model_artifacts
