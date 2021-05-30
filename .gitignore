@@ -4,3 +4,5 @@ env
 
 data.csv
 model_artifacts
+
+__pycache__
