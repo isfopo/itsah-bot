@@ -1,6 +1,5 @@
 import os
 import discord
-import pandas as pd
 from dotenv import load_dotenv
 from sentiment_analysis import get_sentiment
 import helpers
@@ -13,7 +12,7 @@ LIMIT = 100
 
 @client.event
 async def on_ready():
-    print('We have logged in as {0.user}'.format(client))
+    print(f'logged in as {client.user}')
 
 @client.event
 async def on_message(message):
@@ -28,25 +27,16 @@ async def on_message(message):
     await message.channel.send("hello")
 
   elif cmd == 'scan':
-    data = pd.DataFrame(columns=['content', 'time', 'author'])
 
-    async for msg in message.channel.history(limit=LIMIT):
-      if not msg.author.bot and not helpers.is_command(msg):                             
-          data = data.append({'content': msg.content,
-                              'time': msg.created_at,
-                              'author': msg.author.name}, ignore_index=True)
-          if len(data) == LIMIT:
-            break
-      
-    file_location = "data.csv"
-    data.to_csv(file_location)
-
-(score, prediction) = get_sentiment("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.", "model_artifacts")
-
-print(
-  f"Predicted sentiment: {prediction}"
-  f"\tScore: {score}"
-)
+    async for msg in message.channel.history(limit=LIMIT):                 
+      if msg.content and not msg.author.bot and not helpers.is_command(msg):
+        (score, prediction) = get_sentiment(msg.content, "model_artifacts") # prediction is positive or negative, score is how positive or negative it is
+        
+        print(
+          f"Message: {msg.content}"
+          f"\tPredicted sentiment: {prediction}"
+          f"\tScore: {score}"
+        )
 
   
 client.run(os.getenv("DISCORD_TOKEN"))
