@@ -54,8 +54,8 @@ async def on_message(message):
       details.reverse()
       for detail in details:
         details_message += f"Message: {detail['content']} \tAuthor: {detail['author']} \tPrediction: {detail['prediction']} \tScore: {detail['score']}\n"
-      details_message += f"\nOverall Score: {overall_score / message_count}"
-      await message.author.send(details_message)
+      if message_count:
+        details_message += f"\nOverall Score: {overall_score / message_count}"
+      await message.author.send(details_message if details_message else f"{user_param} has no messages in this channel.")
 
-  
 client.run(os.getenv("DISCORD_TOKEN"))
