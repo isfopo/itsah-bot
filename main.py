@@ -25,23 +25,34 @@ async def on_message(message):
   else: return
 
   if cmd == 'itsah':
-    await message.channel.send("Starting Analysis")
+    await message.channel.send("Starting Analysis") # TODO: maybe this can be deleted when analysis is done or show progress
     message_count = 0
     overall_score = 0.0
+    details = []
 
     async for msg in message.channel.history(limit=LIMIT):                 
       if msg.content and not msg.author.bot and not helpers.is_command(msg):
         (prediction, score) = get_sentiment(msg.content, "model_artifacts")
+        details.append({"content": msg.content, "author": msg.author.name, "prediction": prediction, "score": score})
         if   prediction == "positive": overall_score += score
         elif prediction == "negative": overall_score -= score
         message_count += 1
 
-    if message_count:
-      await message.channel.send(
-        f"\tOverall Score: {overall_score / message_count}"
-      )
-    else:
-      await message.channel.send("There are no messages to analyze!")
+    if not params:
+      if message_count:
+        await message.channel.send(
+          f"\tOverall Score: {overall_score / message_count}"
+        )
+      else:
+        await message.channel.send("There are no messages to analyze!")
+
+    elif "details" in params:
+      details_message = ""
+      details.reverse()
+      for detail in details:
+        details_message += f"Message: {detail['content']} \tAuthor: {detail['author']} \tPrediction: {detail['prediction']} \tScore: {detail['score']}\n"
+      details_message += f"\nOverall Score: {overall_score / message_count}"
+      await message.author.send(details_message)
 
   
 client.run(os.getenv("DISCORD_TOKEN"))
