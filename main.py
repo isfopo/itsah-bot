@@ -1,7 +1,6 @@
 import os
 import discord
 from dotenv import load_dotenv
-from numpy import negative
 from sentiment_analysis import get_sentiment
 import helpers
 
@@ -9,7 +8,7 @@ load_dotenv()
 
 client = discord.Client()
 
-LIMIT = 100
+LIMIT = 1000
 
 @client.event
 async def on_ready():
@@ -21,7 +20,7 @@ async def on_message(message):
     return
   elif message.content.startswith("--"):
     cmd = message.content.split()[0].replace("--", "")
-    params = message.content.split()[1:] if len(message.content.split()) > 1 else None #IDEA: use params to get the sentiment from a particular user like "user=isfopo"
+    params = message.content.split()[1:] if len(message.content.split()) > 1 else [] #IDEA: use params to get the sentiment from a particular user like "user=isfopo"
   else: return
 
   if cmd == 'itsah':
@@ -30,18 +29,22 @@ async def on_message(message):
     overall_score = 0.0
     details = []
 
+    user_param = helpers.extract_param(params, "user")
+
     async for msg in message.channel.history(limit=LIMIT):                 
       if msg.content and not msg.author.bot and not helpers.is_command(msg):
+        if user_param and not msg.author.name == user_param:
+          continue
         (prediction, score) = get_sentiment(msg.content, "model_artifacts")
         details.append({"content": msg.content, "author": msg.author.name, "prediction": prediction, "score": score})
         if   prediction == "positive": overall_score += score
         elif prediction == "negative": overall_score -= score
         message_count += 1
 
-    if not params:
+    if not "details" in params:
       if message_count:
         await message.channel.send(
-          f"\tOverall Score: {overall_score / message_count}"
+          f"\tOverall Score for {user_param if user_param else 'channel'}: {overall_score / message_count}"
         )
       else:
         await message.channel.send("There are no messages to analyze!")
