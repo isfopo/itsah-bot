@@ -116,6 +116,19 @@ def test_model(input_data, model_directory: str) -> tuple:
     score = parsed_text.cats["neg"] # TODO: should return score and prediction instead of printing
   return (prediction, score)
 
+def get_sentiment(text: str, model_directory, limit = 2500) -> tuple:
+  score = 0
+  prediction = None
+
+  while not score or not prediction:
+    try:
+      (score, prediction) = test_model(text, model_directory)
+    except (OSError, FileNotFoundError):
+      train, test = load_training_data(limit=limit)
+      train_model(train, test)
+    if score and prediction:
+      return (score, prediction)
+
 def is_command (msg): # Checks if the message is a command call
   if len(msg.content) == 0: return False
   elif msg.content.split()[0].startswith('--'): return True
@@ -151,21 +164,12 @@ async def on_message(message):
     file_location = "data.csv"
     data.to_csv(file_location)
 
-if __name__ == "__main__":
-  score = 0
-  prediction = None
+(score, prediction) = get_sentiment("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.", "model_artifacts")
 
-  while not score or not prediction:
-    try:
-      (score, prediction) = test_model("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.", "model_artifacts")
-    except (OSError, FileNotFoundError) as e:
-      train, test = load_training_data(limit=2500)
-      train_model(train, test)
-    if score and prediction:
-      print(
-        f"Predicted sentiment: {prediction}"
-        f"\tScore: {score}"
-      )
+print(
+  f"Predicted sentiment: {prediction}"
+  f"\tScore: {score}"
+)
 
   
 client.run(os.getenv("DISCORD_TOKEN"))
