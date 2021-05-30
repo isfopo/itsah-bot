@@ -112,10 +112,10 @@ def get_sentiment(text: str, model_directory, training_csv: str = "dataset/train
   while not score or not prediction:
     try:
       if not text:
-        return (score, prediction)
-      (score, prediction) = test_model(text, model_directory)
+        return (prediction, score)
+      (prediction, score) = test_model(text, model_directory)
     except (OSError, FileNotFoundError):
       train, test = load_training_data(training_csv, limit=limit)
       train_model(train, test)
     if score and prediction:
-      return (score, prediction)
+      return (prediction, score)
