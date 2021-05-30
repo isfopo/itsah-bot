@@ -40,18 +40,14 @@ def train_model(
 ) -> None:
   nlp = spacy.load("en_core_web_sm")
   if "textcat" not in nlp.pipe_names:
-    textcat = nlp.create_pipe(
-      "textcat", config={"architecture": "simple_cnn"}
-    )
+    textcat = nlp.create_pipe( "textcat", config={"architecture": "simple_cnn"} )
     nlp.add_pipe(textcat, last=True)
   else:
     textcat = nlp.get_pipe("textcat")
   textcat.add_label("pos")
   textcat.add_label("neg")
 
-  training_excluded_pipes = [
-    pipe for pipe in nlp.pipe_names if pipe != "textcat"
-  ]
+  training_excluded_pipes = [ pipe for pipe in nlp.pipe_names if pipe != "textcat" ]
   with nlp.disable_pipes(training_excluded_pipes):
     optimizer = nlp.begin_training()
     #Training loop
@@ -107,7 +103,7 @@ def evaluate_model( tokenizer, textcat, test_data: list ) -> list:
   else: f_score = 2 * (precision * recall) / (precision + recall)
   return {"precision": precision, "recall": recall, "f-score": f_score}
 
-def test_model(input_data, model_directory: str):
+def test_model(input_data, model_directory: str) -> tuple:
   loaded_model = spacy.load(model_directory)
   #Generate Prediction
   parsed_text = loaded_model(input_data)
@@ -118,10 +114,7 @@ def test_model(input_data, model_directory: str):
   else:
     prediction = "negative"
     score = parsed_text.cats["neg"] # TODO: should return score and prediction instead of printing
-  print(
-        f"Review text: {input_data}\nPredicted sentiment: {prediction}"
-        f"\tScore: {score}"
-    )
+  return (prediction, score)
 
 def is_command (msg): # Checks if the message is a command call
   if len(msg.content) == 0: return False
@@ -139,8 +132,7 @@ async def on_message(message):
   elif message.content.startswith("--"):
     cmd = message.content.split()[0].replace("--", "")
     params = message.content.split()[1:] if len(message.content.split()) > 1 else None #IDEA: use params to get the sentiment from a particular user like "user=isfopo"
-  else:
-    return
+  else: return
 
   if cmd == "hello":
     await message.channel.send("hello")
@@ -160,9 +152,12 @@ async def on_message(message):
     data.to_csv(file_location)
 
 if __name__ == "__main__":
-    train, test = load_training_data(limit=2500) #TODO only run training if model is not present
-    train_model(train, test)
-    print("Testing model")
-    test_model("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.", "model_artifacts")
-
+  train, test = load_training_data(limit=2500) #TODO only run training if model is not present
+  train_model(train, test)
+  print("Testing model")
+  (score, prediction) = test_model("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.", "model_artifacts")
+  print(
+        f"Predicted sentiment: {prediction}"
+        f"\tScore: {score}"
+    )
 client.run(os.getenv("DISCORD_TOKEN"))
