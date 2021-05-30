@@ -6,6 +6,7 @@ import spacy
 from spacy.util import minibatch, compounding
 import pandas as pd
 from dotenv import load_dotenv
+import helpers
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -129,11 +130,6 @@ def get_sentiment(text: str, model_directory, limit = 2500) -> tuple:
     if score and prediction:
       return (score, prediction)
 
-def is_command (msg): # Checks if the message is a command call
-  if len(msg.content) == 0: return False
-  elif msg.content.split()[0].startswith('--'): return True
-  else: return False
-
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -154,7 +150,7 @@ async def on_message(message):
     data = pd.DataFrame(columns=['content', 'time', 'author'])
 
     async for msg in message.channel.history(limit=LIMIT):
-      if not msg.author.bot and not is_command(msg):                             
+      if not msg.author.bot and not helpers.is_command(msg):                             
           data = data.append({'content': msg.content,
                               'time': msg.created_at,
                               'author': msg.author.name}, ignore_index=True)
