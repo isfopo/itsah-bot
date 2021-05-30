@@ -105,7 +105,7 @@ def test_model(input_data, model_directory: str) -> tuple:
     score = parsed_text.cats["neg"]
   return (prediction, score)
 
-def get_sentiment(text: str, model_directory, training_csv: str = "dataset/train.csv", limit = 2500) -> tuple:
+def get_sentiment(text: str, model_directory, training_csv: str, limit = 2500) -> tuple:
   score = 0
   prediction = None
 

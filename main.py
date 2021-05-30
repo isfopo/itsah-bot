@@ -35,7 +35,7 @@ async def on_message(message):
       if msg.content and not msg.author.bot and not helpers.is_command(msg):
         if user_param and not msg.author.name == user_param:
           continue
-        (prediction, score) = get_sentiment(msg.content, "model_artifacts")
+        (prediction, score) = get_sentiment(msg.content, os.getenv("MODEL_PATH"), os.getenv("DATASET_PATH"))
         details.append({"content": msg.content, "author": msg.author.name, "prediction": prediction, "score": score})
         if   prediction == "positive": overall_score += score
         elif prediction == "negative": overall_score -= score
