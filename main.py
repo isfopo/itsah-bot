@@ -14,7 +14,7 @@ load_dotenv()
 client = discord.Client()
 
 LIMIT = 100
-
+# TODO: put ML functions in separate file
 def load_training_data(
     training_csv: str = "dataset/train.csv",
     split: float = 0.8,
@@ -25,17 +25,8 @@ def load_training_data(
     csv_data = csv.reader(f, delimiter = ",")
     line_count = 0
     for row in csv_data:
-      if line_count == 0:
-        line_count += 1
-        pass
-      else:
-        spacy_label = {
-          "cats": {
-            "pos": row[1] == '1',
-            "neg": row[1] == '0'
-          }
-        }
-        messages.append((row[2], spacy_label))
+      if line_count == 0: line_count += 1
+      else: messages.append((row[2], { "cats": { "pos": row[1] == '1', "neg": row[1] == '0' } }))
   random.shuffle(messages)
   if limit:
     messages = messages[:limit]
@@ -105,9 +96,9 @@ def evaluate_model( tokenizer, textcat, test_data: list ) -> list:
   for i, message in enumerate(textcat.pipe(messages)):
     for predicted_label, score in message.cats.items():
       if   predicted_label == "neg": continue
-      if   score >= 0.5 and labels[i]["cats"]["pos"]: true_positives += 1
+      if   score >= 0.5 and labels[i]["cats"]["pos"]: true_positives  += 1
       elif score >= 0.5 and labels[i]["cats"]["neg"]: false_positives += 1
-      elif score <  0.5 and labels[i]["cats"]["neg"]: true_negatives += 1
+      elif score <  0.5 and labels[i]["cats"]["neg"]: true_negatives  += 1
       elif score <  0.5 and labels[i]["cats"]["pos"]: false_negatives += 1
   precision = true_positives / (true_positives + false_positives)
   recall = true_positives / (true_positives + false_negatives)
@@ -116,8 +107,8 @@ def evaluate_model( tokenizer, textcat, test_data: list ) -> list:
   else: f_score = 2 * (precision * recall) / (precision + recall)
   return {"precision": precision, "recall": recall, "f-score": f_score}
 
-def test_model(input_data):
-  loaded_model = spacy.load("model_artifacts") # TODO: pass model name as parameter
+def test_model(input_data, model_directory: str):
+  loaded_model = spacy.load(model_directory)
   #Generate Prediction
   parsed_text = loaded_model(input_data)
   #Determine prediction to return
@@ -172,6 +163,6 @@ if __name__ == "__main__":
     train, test = load_training_data(limit=2500) #TODO only run training if model is not present
     train_model(train, test)
     print("Testing model")
-    test_model("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.")
+    test_model("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.", "model_artifacts")
 
 client.run(os.getenv("DISCORD_TOKEN"))
