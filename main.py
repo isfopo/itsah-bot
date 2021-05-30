@@ -95,9 +95,7 @@ def train_model(
   with nlp.use_params(optimizer.averages):
       nlp.to_disk("model_artifacts")
 
-def evaluate_model(
-  tokenizer, textcat, test_data: list
-) -> list:
+def evaluate_model( tokenizer, textcat, test_data: list ) -> list:
   messages, labels = zip(*test_data)
   messages = (tokenizer(message) for message in messages)
   true_positives = 0
@@ -105,31 +103,21 @@ def evaluate_model(
   true_negatives = 0
   false_negatives = 1e-8
   for i, message in enumerate(textcat.pipe(messages)):
-    true_label = labels[i]["cats"]
     for predicted_label, score in message.cats.items():
-      if (
-        predicted_label == "neg"
-      ):
-        continue
-      if score >= 0.5 and true_label["pos"]:
-        true_positives += 1
-      elif score >= 0.5 and true_label["neg"]:
-        false_positives += 1
-      elif score < 0.5 and true_label["neg"]:
-        true_negatives += 1
-      elif score < 0.5 and true_label["pos"]:
-        false_negatives += 1
+      if   predicted_label == "neg": continue
+      if   score >= 0.5 and labels[i]["cats"]["pos"]: true_positives += 1
+      elif score >= 0.5 and labels[i]["cats"]["neg"]: false_positives += 1
+      elif score <  0.5 and labels[i]["cats"]["neg"]: true_negatives += 1
+      elif score <  0.5 and labels[i]["cats"]["pos"]: false_negatives += 1
   precision = true_positives / (true_positives + false_positives)
   recall = true_positives / (true_positives + false_negatives)
 
-  if precision + recall == 0:
-    f_score = 0
-  else:
-    f_score = 2 * (precision * recall) / (precision + recall)
+  if precision + recall == 0: f_score = 0
+  else: f_score = 2 * (precision * recall) / (precision + recall)
   return {"precision": precision, "recall": recall, "f-score": f_score}
 
 def test_model(input_data):
-  loaded_model = spacy.load("model_artifacts")
+  loaded_model = spacy.load("model_artifacts") # TODO: pass model name as parameter
   #Generate Prediction
   parsed_text = loaded_model(input_data)
   #Determine prediction to return
@@ -138,7 +126,7 @@ def test_model(input_data):
     score = parsed_text.cats["pos"]
   else:
     prediction = "negative"
-    score = parsed_text.cats["neg"]
+    score = parsed_text.cats["neg"] # TODO: should return score and prediction instead of printing
   print(
         f"Review text: {input_data}\nPredicted sentiment: {prediction}"
         f"\tScore: {score}"
@@ -181,7 +169,7 @@ async def on_message(message):
     data.to_csv(file_location)
 
 if __name__ == "__main__":
-    train, test = load_training_data(limit=2500)
+    train, test = load_training_data(limit=2500) #TODO only run training if model is not present
     train_model(train, test)
     print("Testing model")
     test_model("Transcendently beautiful in moments outside the office, it seems almost sitcom-like in those scenes. When Toni Colette walks out and ponders life silently, it's gorgeous.")
