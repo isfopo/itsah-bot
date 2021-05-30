@@ -20,11 +20,11 @@ async def on_message(message):
     return
   elif message.content.startswith("--"):
     cmd = message.content.split()[0].replace("--", "")
-    params = message.content.split()[1:] if len(message.content.split()) > 1 else [] #IDEA: use params to get the sentiment from a particular user like "user=isfopo"
+    params = message.content.split()[1:] if len(message.content.split()) > 1 else []
   else: return
 
   if cmd == 'itsah':
-    await message.channel.send("Starting Analysis") # TODO: maybe this can be deleted when analysis is done or show progress
+    response_message = await message.channel.send("Starting analysis...") # TODO: maybe this can be deleted when analysis is done or show progress
     message_count = 0
     overall_score = 0.0
     details = []
@@ -43,11 +43,11 @@ async def on_message(message):
 
     if not "details" in params:
       if message_count:
-        await message.channel.send(
-          f"\tOverall Score for {user_param if user_param else 'channel'}: {overall_score / message_count}"
+        await response_message.edit(
+          content = f"\tOverall Score for {user_param if user_param else 'channel'}: {overall_score / message_count}"
         )
       else:
-        await message.channel.send("There are no messages to analyze!")
+        await response_message.edit( content = "There are no messages to analyze!")
 
     elif "details" in params:
       details_message = ""
@@ -57,5 +57,6 @@ async def on_message(message):
       if message_count:
         details_message += f"\nOverall Score: {overall_score / message_count}"
       await message.author.send(details_message if details_message else f"{user_param} has no messages in this channel.")
+      await response_message.edit( content = "Details have been sent to your DM", delete_after = 30.0 )
 
 client.run(os.getenv("DISCORD_TOKEN"))
