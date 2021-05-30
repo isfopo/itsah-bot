@@ -5,7 +5,7 @@ from spacy.util import minibatch, compounding
 nlp = spacy.load("en_core_web_sm")
 
 def load_training_data(
-    training_csv: str = "dataset/train.csv",
+    training_csv: str,
     split: float = 0.8,
     limit: int = 0
 ) -> tuple:
@@ -105,15 +105,17 @@ def test_model(input_data, model_directory: str) -> tuple:
     score = parsed_text.cats["neg"]
   return (prediction, score)
 
-def get_sentiment(text: str, model_directory, limit = 2500) -> tuple:
+def get_sentiment(text: str, model_directory, training_csv: str = "dataset/train.csv", limit = 2500) -> tuple:
   score = 0
   prediction = None
 
   while not score or not prediction:
     try:
+      if not text:
+        return (score, prediction)
       (score, prediction) = test_model(text, model_directory)
     except (OSError, FileNotFoundError):
-      train, test = load_training_data(limit=limit)
+      train, test = load_training_data(training_csv, limit=limit)
       train_model(train, test)
     if score and prediction:
       return (score, prediction)
