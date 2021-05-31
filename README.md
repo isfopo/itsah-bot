@@ -10,6 +10,17 @@ A sentiment analysis bot for Discord using python and machine learning.
 
 ### Create .env file
 
+### Add Bot to server
+
+## Usage
+The istah bot resoponds to the **"--itsah"** command. Typing **"--itsah"** in the channel will result in a overall sentiment score of ranging from -100% to 100% where higher numbers are have a more positive sentiment and lower numbers have a more negitive sentiment. 
+
+### Keywords
+- **"details"** - the **"details"** keyword can be used to see details (content, author, prediction and score) about individual messages on the channel. These details will be sent to your DMs as opposed to the main channel. Example: "--itsah details"
+- **"user=<name>"** - the **"user=<name>"** keyword will filter the messages to only return the score for the specified user. Example: "--itsah user=isfopo"
+  
+Note: these two keywords can be used together to give you detailed analysis of one user's messages sent to your DMs.
+
 ## Links
 
 [Create a Discord Bot by Beau Carnes](https://www.freecodecamp.org/news/create-a-discord-bot-with-python/)
