@@ -12,14 +12,40 @@ After following the link, login or register to your account. Once you have done 
 Click on the "Bot" tab on the left sidebar than click the "Add Bot" button. This will create your bot add generate a token that can be copied to your clipboard using the "Copy" button. This will be needed later for the API client, so either keep this page open or save it in a save place. 
 
 ### Add Bot to a server
-
 If you want to try this bot out on a server, make sure you have created and logged into the server you want to add it to. Back in the Discord Developer Portal, go to the "OAuth2" tab on the left sidebar. Scroll down to "SCOPES" and click the "bot" checkbox. Then scroll down to "BOT PERMISSIONS" and click "View Channels", "Send Messages", "Manage Messages" and "Read Message History" permissions. Above, there is a URL and a "Copy" button next to it. Click that button and paste the URL in your browser in a new tab or window. Choose a server to add the bot to and click "Authorize". You will need permissions to the server to add the bot.
 
-### Install Dependencies
+### Clone Repo
+In your terminal, navigate to the folder where you wish to add this project then paste:
 
-### Add Dataset
+```git clone https://github.com/isfopo/itsah-bot.git```
+
+### Setup Virtual Enviroment
+After the repo has been cloned, open the folder with the command 
+
+```cd itsah-bot```
+
+To setup the virtual enviorment, type
+
+```python3 -m venv env```
+
+Windows users should use ```python``` instead of ```python3```.
+
+Then, once the virtual enviroment is setup, use ```source env/bin/activate``` to start the virtual enviroment.
+
+### Install Dependencies
+To install all dependencies at once, use the command ```pip3 install -r requirements.txt```.
+
+Windows users should use ```pip``` instead of ```pip3```.
 
 ### Create .env file
+This project will need a .env file to hold the API and other variables. This file should be named ".env" and contain the following:
+```
+DISCORD_TOKEN=(the token for your bot from the Discord Developer Portal)
+
+```
+
+### Add Dataset
+The language processor will need a dataset to train it's model on, so be sure to include one in your project, with the DATASET_PATH variable in your .env file pointing to it. This dataset must be in .csv form. Several examples are included in the "Links" section of this README. 
 
 ## Usage
 The istah bot resoponds to the **"--itsah"** command. Typing **"--itsah"** in the channel will result in a overall sentiment score of ranging from -100% to 100% where higher numbers are have a more positive sentiment and lower numbers have a more negitive sentiment. 
