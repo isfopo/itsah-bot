@@ -69,14 +69,22 @@ Note: these two keywords can be used together to give you detailed analysis of o
 
 ## Links
 
+### Discord
+
 [Create a Discord Bot by Beau Carnes](https://www.freecodecamp.org/news/create-a-discord-bot-with-python/)
 
 [Gather message data using a bot by Thiago Rodrigues](https://levelup.gitconnected.com/how-to-gather-message-data-using-a-discord-bot-from-scratch-with-python-2fe239da3bcd)
 
+### Machine Learning
+
 [Sentiment Analysis - Real Python](https://realpython.com/sentiment-analysis-python/)
+
+### Datasets
+
+[Twitter Sentiment Analysis Dataset by Sami Belkacem](https://www.kaggle.com/sambelkacem/twitter-sentiment-analysis-data)
+
+### Python IO
 
 [Using .env file by Miguel Grinburg](https://www.twilio.com/blog/environment-variables-python)
 
 [Reading and Writing .csv in Python - Real Python](https://realpython.com/python-csv/)
-
-[Twitter Sentiment Analysis Dataset by Sami Belkacem](https://www.kaggle.com/sambelkacem/twitter-sentiment-analysis-data)
