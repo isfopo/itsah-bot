@@ -56,6 +56,12 @@ DATASET_PATH=(the path to your dataset)
 
 The language processor will need a dataset to train it's model on, so be sure to include one in your project, with the DATASET_PATH variable in your .env file pointing to it. This dataset must be in .csv form. Several examples are included in the "Links" section of this README.
 
+### Running Program
+
+To run the program type `python3 main.py` in the terminal. The first time you run the program, the model will have to be created and trained. You will see the out put of that in your terminal. After that, if your model is present at the path in your .env than it will not need to train again.
+
+Once you get a message in your terminal that the bot is logged in, you may interact with it using the commands below on your Discord channel.
+
 ## Usage
 
 The istah bot responds to the **"--itsah"** command. Typing **"--itsah"** in the channel will result in a overall sentiment score of ranging from -100% to 100% where higher numbers are have a more positive sentiment and lower numbers have a more negative sentiment.
