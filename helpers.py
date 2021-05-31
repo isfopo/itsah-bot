@@ -19,3 +19,6 @@ def extract_param(params: list, keyword: str):
   if param:
     return last_or_none(param.split("="))
   else: return None
+
+def to_percent(decimal: int):
+  return int(decimal * 100)

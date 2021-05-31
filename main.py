@@ -49,7 +49,7 @@ async def on_message(message):
     if not "details" in params:
       if message_count:
         await response_message.edit(
-          content = f"\tOverall Score for {user_param if user_param else 'channel'}: {overall_score / message_count}"
+          content = f"\tOverall Score for {user_param if user_param else 'channel'}: {helpers.to_percent(overall_score / message_count)}%"
         )
       else:
         await response_message.edit( content = "There are no messages to analyze!")
@@ -58,10 +58,10 @@ async def on_message(message):
       details_message = ""
       details.reverse()
       for detail in details:
-        details_message += f"Message: {detail['content']} \tAuthor: {detail['author']} \tPrediction: {detail['prediction']} \tScore: {detail['score']}\n"
+        details_message += f"Message: {detail['content']} \tAuthor: {detail['author']} \tPrediction: {detail['prediction']} \tScore: {helpers.to_percent(detail['score'])}%\n"
       if message_count:
-        details_message += f"\nOverall Score: {overall_score / message_count}"
-      await message.author.send(details_message if details_message else f"{user_param} has no messages in this channel.")
+        details_message += f"\nOverall Score: {helpers.to_percent(overall_score / message_count)}%"
+      await message.author.send( details_message if details_message else f"{user_param} has no messages in this channel.")
       await response_message.edit( content = "Details have been sent to your DM", delete_after = 30.0 )
 
 if __name__ == "__main__":
