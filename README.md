@@ -48,7 +48,8 @@ This project will need a .env file to hold the API and other variables. This fil
 
 ```sh
 DISCORD_TOKEN=(the token for your bot from the Discord Developer Portal)
-
+MODEL_PATH=(the name of the directory to store your model)
+DATASET_PATH=(the path to your dataset)
 ```
 
 ### Add Dataset
