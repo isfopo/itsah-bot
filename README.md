@@ -8,6 +8,8 @@ A sentiment analysis bot for Discord using python and machine learning.
 
 ### Install Dependencies
 
+### Add Dataset
+
 ### Create .env file
 
 ### Add Bot to server
