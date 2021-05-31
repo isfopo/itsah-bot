@@ -16,7 +16,7 @@ LIMIT = 1000
 async def on_ready():
   print(f'logged in as {client.user}')
   if not os.path.isdir(os.getenv("MODEL_PATH")):
-    train, test = load_training_data(os.getenv("TRAINING_DATASET_PATH"))
+    train, test = load_training_data(os.getenv("TRAINING_DATASET_PATH"), rating_column=1, text_column=2)
     train_model(train, test, os.getenv("MODEL_PATH"))
 
 @client.event
@@ -40,7 +40,7 @@ async def on_message(message):
       if msg.content and not msg.author.bot and not helpers.is_command(msg):
         if user_param and not msg.author.name == user_param:
           continue
-        (prediction, score) = get_sentiment(msg.content, os.getenv("MODEL_PATH"), os.getenv("TRAINING_DATASET_PATH"))
+        (prediction, score) = get_sentiment(msg.content, os.getenv("MODEL_PATH"), os.getenv("TRAINING_DATASET_PATH"), rating_column=1, text_column=2)
         details.append({"content": msg.content, "author": msg.author.name, "prediction": prediction, "score": score})
         if   prediction == "positive": overall_score += score
         elif prediction == "negative": overall_score -= score
