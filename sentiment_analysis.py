@@ -2,6 +2,7 @@ import csv
 import random
 import spacy
 from spacy.util import minibatch, compounding
+
 nlp = spacy.load("en_core_web_sm")
 
 def load_training_data(
