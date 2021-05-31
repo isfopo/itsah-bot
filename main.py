@@ -17,7 +17,7 @@ async def on_ready():
   print(f'logged in as {client.user}')
   if not os.path.isdir(os.getenv("MODEL_PATH")):
     train, test = load_training_data(os.getenv("TRAINING_DATASET_PATH"))
-    train_model(train, test, os.env("MODEL_PATH"))
+    train_model(train, test, os.getenv("MODEL_PATH"))
 
 @client.event
 async def on_message(message):
@@ -52,7 +52,7 @@ async def on_message(message):
           content = f"\tOverall Score for {user_param if user_param else 'channel'}: {helpers.to_percent(overall_score / message_count)}%"
         )
       else:
-        await response_message.edit( content = "There are no messages to analyze!")
+        await response_message.edit( content = "There are no messages to analyze!" )
 
     elif "details" in params:
       details_message = ""

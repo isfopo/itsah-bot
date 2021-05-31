@@ -5,13 +5,9 @@ from spacy.util import minibatch, compounding
 
 nlp = spacy.load("en_core_web_sm")
 
-def load_training_data(
-    training_csv: str,
-    split: float = 0.8,
-    limit: int = 2500
-) -> tuple:
+def load_csv(filename: str = '', limit: int = 2500):
   messages = []
-  with open(training_csv, encoding='latin-1') as f:
+  with open(filename, encoding='latin-1') as f:
     csv_data = csv.reader(f, delimiter = ",")
     line_count = 0
     for row in csv_data:
@@ -20,8 +16,21 @@ def load_training_data(
   random.shuffle(messages)
   if limit:
     messages = messages[:limit]
-  split = int(len(messages) * split)
-  return messages[:split], messages[split:]
+  return messages
+
+def load_training_data(
+    training_csv: str,
+    testing_csv: str = None,
+    split: float = 0.8,
+    limit: int = 2500
+) -> tuple:
+  messages = load_csv(training_csv)
+  if not testing_csv:
+    split = int(len(messages) * split)
+    return messages[:split], messages[split:]
+  else:
+    testing_messages = load_csv(testing_csv)
+    return messages, testing_messages
 
 def train_model(
   training_data: list,
@@ -45,7 +54,7 @@ def train_model(
     print("Begin training")
     print("Loss\tPrecision\tRecall\tF-score")
     batch_sizes = compounding(4.0, 32.0, 1.001)
-    for i in range(iterations):
+    for _ in range(iterations):
       loss = {}
       random.shuffle(training_data)
       batches = minibatch(training_data, size=batch_sizes)
@@ -108,7 +117,7 @@ def test_model(input_data, model_directory: str) -> tuple:
     score = parsed_text.cats["neg"]
   return (prediction, score)
 
-def get_sentiment(text: str, model_directory, training_csv: str, limit = 2500) -> tuple:
+def get_sentiment(text: str, model_directory, training_csv: str, testing_csv: str = None, limit = 2500) -> tuple:
   score = 0
   prediction = None
 
@@ -118,7 +127,10 @@ def get_sentiment(text: str, model_directory, training_csv: str, limit = 2500) -
         return (prediction, score)
       (prediction, score) = test_model(text, model_directory)
     except (OSError, FileNotFoundError):
-      train, test = load_training_data(training_csv, limit=limit)
+      if testing_csv:
+        train, test = load_training_data(training_csv, testing_csv, limit=limit)
+      else:
+        train, test = load_training_data(training_csv, limit=limit)
       train_model(train, test, model_directory)
     if score and prediction:
       return (prediction, score)
