@@ -28,7 +28,7 @@ async def on_message(message):
     params = message.content.split()[1:] if len(message.content.split()) > 1 else []
   else: return
 
-  if cmd == 'itsah':
+  if cmd == 'senti':
     response_message = await message.channel.send("Starting analysis...")
     message_count = 0
     overall_score = 0.0

@@ -1,4 +1,4 @@
-# itsah-bot
+# senti-bot
 
 A sentiment analysis bot for Discord using python and machine learning.
 
@@ -8,7 +8,7 @@ A sentiment analysis bot for Discord using python and machine learning.
 
 Every Discord bot must be registered with Discord itself, so in order to do so to go the [Discord Developer Portal](https://discord.com/login?redirect_to=%2Fdevelopers%2Fapplications) and register your bot.
 
-After following the link, login or register to your account. Once you have done that, you should see a "New Application" button in the top right corner of your screen. Clicking this will prompt you to enter a name (any name is fine, even itsah-bot) then allow you to create your application by pressing the "Create" button.
+After following the link, login or register to your account. Once you have done that, you should see a "New Application" button in the top right corner of your screen. Clicking this will prompt you to enter a name (any name is fine, even senti-bot) then allow you to create your application by pressing the "Create" button.
 
 Click on the "Bot" tab on the left sidebar than click the "Add Bot" button. This will create your bot add generate a token that can be copied to your clipboard using the "Copy" button. This will be needed later for the API client, so either keep this page open or save it in a save place.
 
@@ -20,13 +20,13 @@ If you want to try this bot out on a server, make sure you have created and logg
 
 In your terminal, navigate to the folder where you wish to add this project then paste:
 
-`git clone https://github.com/isfopo/itsah-bot.git`
+`git clone https://github.com/isfopo/senti-bot.git`
 
 ### Setup Virtual Environment
 
 After the repo has been cloned, open the folder with the command
 
-`cd itsah-bot`
+`cd senti-bot`
 
 To setup the virtual environment, type
 
@@ -67,12 +67,12 @@ Once you get a message in your terminal that the bot is logged in, you may inter
 
 ## Usage
 
-The istah bot responds to the **"--itsah"** command. Typing **"--itsah"** in the channel will result in a overall sentiment score of ranging from -100% to 100% where higher numbers are have a more positive sentiment and lower numbers have a more negative sentiment.
+The senti-bot responds to the **"--senti"** command. Typing **"--senti"** in the channel will result in a overall sentiment score of ranging from -100% to 100% where higher numbers are have a more positive sentiment and lower numbers have a more negative sentiment.
 
 ### Keywords
 
-- **"details"** - the **"details"** keyword can be used to see details (content, author, prediction and score) about individual messages on the channel. These details will be sent to your DMs as opposed to the main channel. Example: "--itsah details"
-- **"user=_name_"** - the **"user=_name_"** keyword will filter the messages to only return the score for the specified user. Example: "--itsah user=isfopo"
+- **"details"** - the **"details"** keyword can be used to see details (content, author, prediction and score) about individual messages on the channel. These details will be sent to your DMs as opposed to the main channel. Example: "--senti details"
+- **"user=_name_"** - the **"user=_name_"** keyword will filter the messages to only return the score for the specified user. Example: "--senti user=isfopo"
 
 Note: these two keywords can be used together to give you detailed analysis of one user's messages sent to your DMs.
 
