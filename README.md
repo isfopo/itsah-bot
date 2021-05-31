@@ -5,14 +5,21 @@ A sentiment analysis bot for Discord using python and machine learning.
 ## Setup
 
 ### Register bot
+Every Discord bot must be registered with Discord itself, so in order to do so to go the [Discord Developer Portal](https://discord.com/login?redirect_to=%2Fdevelopers%2Fapplications) and register your bot. 
+
+After following the link, login or register to your account. Once you have done that, you should see a "New Application" button in the top right corner of your screen. Clicking this will prompt you to enter a name (anyname is fine, even itsah-bot) then allow you to create your application by pressing the "Create" button.
+
+Click on the "Bot" tab on the left sidebar than click the "Add Bot" button. This will create your bot add generate a token that can be copied to your clipboard using the "Copy" button. This will be needed later for the API client, so either keep this page open or save it in a save place. 
+
+### Add Bot to a server
+
+If you want to try this bot out on a server, make sure you have created and logged into the server you want to add it to. Back in the Discord Developer Portal, go to the "OAuth2" tab on the left sidebar. Scroll down to "SCOPES" and click the "bot" checkbox. Then scroll down to "BOT PERMISSIONS" and click "View Channels", "Send Messages", "Manage Messages" and "Read Message History" permissions. Above, there is a URL and a "Copy" button next to it. Click that button and paste the URL in your browser in a new tab or window. Choose a server to add the bot to and click "Authorize". You will need permissions to the server to add the bot.
 
 ### Install Dependencies
 
 ### Add Dataset
 
 ### Create .env file
-
-### Add Bot to server
 
 ## Usage
 The istah bot resoponds to the **"--itsah"** command. Typing **"--itsah"** in the channel will result in a overall sentiment score of ranging from -100% to 100% where higher numbers are have a more positive sentiment and lower numbers have a more negitive sentiment. 
