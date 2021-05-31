@@ -8,7 +8,7 @@ nlp = spacy.load("en_core_web_sm")
 def load_training_data(
     training_csv: str,
     split: float = 0.8,
-    limit: int = 0
+    limit: int = 2500
 ) -> tuple:
   messages = []
   with open(training_csv, encoding='latin-1') as f:
@@ -26,6 +26,7 @@ def load_training_data(
 def train_model(
   training_data: list,
   test_data: list,
+  model_path: str,
   iterations: int = 20
 ) -> None:
   nlp = spacy.load("en_core_web_sm")
@@ -70,7 +71,8 @@ def train_model(
         )
 
   with nlp.use_params(optimizer.averages):
-      nlp.to_disk("model_artifacts")
+      nlp.to_disk(model_path)
+      print(f"Model saved to {model_path}")
 
 def evaluate_model( tokenizer, textcat, test_data: list ) -> list:
   messages, labels = zip(*test_data)
@@ -117,6 +119,6 @@ def get_sentiment(text: str, model_directory, training_csv: str, limit = 2500) -
       (prediction, score) = test_model(text, model_directory)
     except (OSError, FileNotFoundError):
       train, test = load_training_data(training_csv, limit=limit)
-      train_model(train, test)
+      train_model(train, test, model_directory)
     if score and prediction:
       return (prediction, score)

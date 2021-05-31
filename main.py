@@ -2,6 +2,8 @@ import os
 import discord
 from dotenv import load_dotenv
 from sentiment_analysis import get_sentiment
+from sentiment_analysis import load_training_data
+from sentiment_analysis import train_model
 import helpers
 
 load_dotenv()
@@ -12,7 +14,10 @@ LIMIT = 1000
 
 @client.event
 async def on_ready():
-    print(f'logged in as {client.user}')
+  print(f'logged in as {client.user}')
+  if not os.path.isdir(os.getenv("MODEL_PATH")):
+    train, test = load_training_data(os.getenv("TRAINING_DATASET_PATH"))
+    train_model(train, test, os.env("MODEL_PATH"))
 
 @client.event
 async def on_message(message):
@@ -24,7 +29,7 @@ async def on_message(message):
   else: return
 
   if cmd == 'itsah':
-    response_message = await message.channel.send("Starting analysis...") # TODO: maybe this can be deleted when analysis is done or show progress
+    response_message = await message.channel.send("Starting analysis...")
     message_count = 0
     overall_score = 0.0
     details = []
@@ -35,7 +40,7 @@ async def on_message(message):
       if msg.content and not msg.author.bot and not helpers.is_command(msg):
         if user_param and not msg.author.name == user_param:
           continue
-        (prediction, score) = get_sentiment(msg.content, os.getenv("MODEL_PATH"), os.getenv("DATASET_PATH"))
+        (prediction, score) = get_sentiment(msg.content, os.getenv("MODEL_PATH"), os.getenv("TRAINING_DATASET_PATH"))
         details.append({"content": msg.content, "author": msg.author.name, "prediction": prediction, "score": score})
         if   prediction == "positive": overall_score += score
         elif prediction == "negative": overall_score -= score
@@ -59,4 +64,5 @@ async def on_message(message):
       await message.author.send(details_message if details_message else f"{user_param} has no messages in this channel.")
       await response_message.edit( content = "Details have been sent to your DM", delete_after = 30.0 )
 
-client.run(os.getenv("DISCORD_TOKEN"))
+if __name__ == "__main__":
+  client.run(os.getenv("DISCORD_TOKEN"))
