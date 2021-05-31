@@ -42,6 +42,8 @@ To install all dependencies at once, use the command `pip3 install -r requiremen
 
 Windows users should use `pip` instead of `pip3`.
 
+After those packages are finished download with run the command: `python -m spacy download en_core_web_sm`
+
 ### Create .env file
 
 This project will need a .env file to hold the API and other variables. This file should be named ".env" and contain the following:
