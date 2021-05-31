@@ -2,9 +2,7 @@
 env
 .vscode
 
-data.csv
+*.csv
 model_artifacts
 
 __pycache__
-
-dataset
