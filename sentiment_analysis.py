@@ -5,7 +5,13 @@ from spacy.util import minibatch, compounding
 
 nlp = spacy.load("en_core_web_sm")
 
-def load_csv(filename: str = '', rating_column: int = 1, text_column: int = 2, limit: int = 2500):
+
+def load_csv(
+  filename: str = '', 
+  rating_column: int = 1, 
+  text_column: int = 2, 
+  limit: int = 2500
+) -> list:
   messages = []
   with open(filename, encoding='latin-1') as f:
     csv_data = csv.reader(f, delimiter = ",")
@@ -17,6 +23,7 @@ def load_csv(filename: str = '', rating_column: int = 1, text_column: int = 2, l
   if limit:
     messages = messages[:limit]
   return messages
+
 
 def load_training_data(
     training_csv: str,
@@ -33,6 +40,7 @@ def load_training_data(
   else:
     testing_messages = load_csv(testing_csv, rating_column, text_column)
     return messages, testing_messages
+
 
 def train_model(
   training_data: list,
@@ -85,6 +93,7 @@ def train_model(
       nlp.to_disk(model_path)
       print(f"Model saved to {model_path}")
 
+
 def evaluate_model( tokenizer, textcat, test_data: list ) -> list:
   messages, labels = zip(*test_data)
   messages = (tokenizer(message) for message in messages)
@@ -117,14 +126,15 @@ def test_model(input_data, model_directory: str) -> tuple:
   else:
     prediction = "negative"
     score = parsed_text.cats["neg"]
-  return (prediction, score)
+  return prediction, score
 
 def get_sentiment(
   text: str, model_directory, 
   training_csv: str, 
   testing_csv: str = None, 
   rating_column: int = 1, 
-  text_column: int = 2, limit = 2500
+  text_column: int = 2, 
+  limit = 2500
 ) -> tuple:
   score = 0
   prediction = None
@@ -132,13 +142,23 @@ def get_sentiment(
   while not score or not prediction:
     try:
       if not text:
-        return (prediction, score)
-      (prediction, score) = test_model(text, model_directory)
+        return prediction, score
+      prediction, score = test_model(text, model_directory)
     except (OSError, FileNotFoundError):
       if testing_csv:
-        train, test = load_training_data(training_csv, testing_csv, rating_column=1, text_column=2, limit=limit)
+        train, test = load_training_data(
+          training_csv, testing_csv, 
+          rating_column=rating_column, 
+          text_column=text_column, 
+          limit=limit
+        )
       else:
-        train, test = load_training_data(training_csv, rating_column=1, text_column=2, limit=limit)
+        train, test = load_training_data(
+          training_csv, 
+          rating_column=1, 
+          text_column=2, 
+          limit=limit
+        )
       train_model(train, test, model_directory)
     if score and prediction:
-      return (prediction, score)
+      return prediction, score
