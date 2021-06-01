@@ -1,21 +1,24 @@
+import logging
 import os
 import discord
+from datetime import datetime
 from dotenv import load_dotenv
 from sentiment_analysis import get_sentiment
 from sentiment_analysis import load_training_data
 from sentiment_analysis import train_model
 from helpers import *
 
+logging.basicConfig(filename='.log', level=logging.INFO)
+
 load_dotenv()
 
 client = discord.Client()
-
-LIMIT = 1000
 
 
 @client.event
 async def on_ready():
   print(f'logged in as {client.user}')
+  logging.info(f'log in as {client.user} at {datetime.now()}')
   if not os.path.isdir(os.getenv("MODEL_PATH")):
     train, test = load_training_data(os.getenv("TRAINING_DATASET_PATH"), rating_column=1, text_column=2)
     train_model(train, test, os.getenv("MODEL_PATH"))
@@ -32,13 +35,14 @@ async def on_message(message):
 
   if cmd == 'senti':
     response_message = await message.channel.send("Starting analysis...")
+    logging.info(f"{message.author} called \"{message.content}\" at {datetime.now()}")
     message_count = 0
     overall_score = 0.0
     details = []
 
     user_param = extract_param(params, "user")
 
-    async for msg in message.channel.history(limit=LIMIT):                 
+    async for msg in message.channel.history(limit=1000):                 
       if msg.content and not msg.author.bot and not is_command(msg):
         if user_param and not msg.author.name == user_param:
           continue

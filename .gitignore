@@ -3,6 +3,7 @@ env
 .vscode
 
 *.csv
+*.log
 model_artifacts
 
 __pycache__

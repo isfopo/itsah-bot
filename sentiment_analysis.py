@@ -1,9 +1,12 @@
 import csv
 import random
 import spacy
+import logging
+from datetime import datetime
 from spacy.util import minibatch, compounding
 
 nlp = spacy.load("en_core_web_sm")
+logging.basicConfig(filename='.log', level=logging.INFO)
 
 
 def load_csv(
@@ -91,7 +94,8 @@ def train_model(
 
   with nlp.use_params(optimizer.averages):
       nlp.to_disk(model_path)
-      print(f"Model saved to {model_path}")
+      logging.info(f'Model saved to {model_path} at {datetime.now()}')
+      print(f'Model saved to {model_path} at {datetime.now()}')
 
 
 def evaluate_model( tokenizer, textcat, test_data: list ) -> list:
